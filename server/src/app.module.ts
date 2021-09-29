@@ -27,7 +27,8 @@ import { Verfication } from './user/entities/verification.entity';
         PG_USER: Joi.string().required(),
         PG_PASS: Joi.string().required(),
         PG_DB: Joi.string().required(),
-        JWT_SECRET: Joi.string().required(),
+        ACCESS_TOKEN_SECRET: Joi.string().required(),
+        REFRESH_TOKEN_SECRET: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -46,7 +47,8 @@ import { Verfication } from './user/entities/verification.entity';
       context: ({ req }) => ({ user: req['user'] }),
     }),
     AuthModule.forRoot({
-      tokenSecret: process.env.JWT_SECRET,
+      accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
+      refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
     }),
     UserModule,
   ],

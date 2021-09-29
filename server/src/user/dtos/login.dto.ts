@@ -9,4 +9,7 @@ export class LoginInput extends PickType(User, ['email', 'password']) {}
 export class LoginResponse extends Response {
   @Field((type) => String, { nullable: true })
   token?: string;
+
+  @Field((type) => String, { nullable: true })
+  refresh?: string;
 }

@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from 'src/auth/auth.service';
 import { ProfileResponse } from './dtos/profile.dto';
 import { Verfication } from './entities/verification.entity';
+import { VerifyInput, VerifyResponse } from './dtos/verify.dto';
 
 @Injectable()
 export class UserService {
@@ -16,8 +17,7 @@ export class UserService {
     @InjectRepository(User) private readonly user: Repository<User>,
     @InjectRepository(Verfication)
     private readonly verification: Repository<Verfication>,
-    private readonly config: ConfigService,
-    private readonly auth: AuthService,
+    private readonly authService: AuthService,
   ) {}
 
   async register({
@@ -53,11 +53,13 @@ export class UserService {
     const _user = await this.user.findOne({ email });
     if (_user) {
       if (await _user.checkPassword(password)) {
-        const token = this.auth.sign({ id: _user.id });
+        const token = this.authService.sign({ id: _user.id });
+        const refresh = this.authService.refresh({ id: _user.id });
         return {
           status: 'ok',
           message: 'Logged-in',
           token,
+          refresh,
         };
       }
       return {
@@ -86,5 +88,21 @@ export class UserService {
     };
   }
 
-  async verify({ code, user }) {}
+  async verify({ code, user }: VerifyInput): Promise<VerifyResponse> {
+    const _verification = await this.verification.findOne(
+      { code },
+      { relations: ['user'] },
+    );
+    if (_verification.user.id === user.id) {
+      await this.user.update({ id: user.id }, { isVerified: true });
+      return {
+        status: 'ok',
+        message: 'Verification success.',
+      };
+    }
+    return {
+      status: 'error',
+      message: 'Invalid verification code.',
+    };
+  }
 }

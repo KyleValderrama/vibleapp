@@ -4,8 +4,11 @@ import {
   AuthModuleOptions,
   CONFIG_OPTIONS,
 } from './interfaces/options.interface';
+import { AuthResolver } from './auth.resolver';
 
-@Module({})
+@Module({
+  providers: [AuthResolver]
+})
 @Global()
 export class AuthModule {
   static forRoot(options: AuthModuleOptions): DynamicModule {

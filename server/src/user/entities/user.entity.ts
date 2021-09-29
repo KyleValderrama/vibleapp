@@ -28,7 +28,7 @@ export class User extends Core {
   spotifyId?: string;
 
   @Field((type) => Boolean)
-  @Column({ nullable: true, default: true })
+  @Column({ nullable: true, default: false })
   isVerified: boolean;
 
   @BeforeInsert()

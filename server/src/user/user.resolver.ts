@@ -1,18 +1,11 @@
 import { UseGuards } from '@nestjs/common';
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  Context,
-  ArgsType,
-} from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { AuthUser } from 'src/auth/auth-user.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { Response } from 'src/common/dtos/response.dto';
 import { LoginInput, LoginResponse } from './dtos/login.dto';
 import { ProfileInput, ProfileResponse } from './dtos/profile.dto';
 import { RegisterInput, RegisterResponse } from './dtos/register.dto';
+import { VerifyInput, VerifyResponse } from './dtos/verify.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
@@ -40,5 +33,14 @@ export class UserResolver {
   @UseGuards(AuthGuard)
   async user(@Args() { id }: ProfileInput) {
     return await this.userService.findById(id);
+  }
+
+  @Mutation((returns) => VerifyResponse)
+  @UseGuards(AuthGuard)
+  async verify(
+    @AuthUser() _user: ProfileResponse,
+    @Args('input') { code }: VerifyInput,
+  ) {
+    return await this.userService.verify({ code, user: _user.user });
   }
 }
