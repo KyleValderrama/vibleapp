@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { User } from 'src/user/entities/user.entity';
+
 import {
   AuthModuleOptions,
   CONFIG_OPTIONS,
