@@ -13,6 +13,7 @@ import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './auth/middlewares/auth.middleware';
 import { Verfication } from './user/entities/verification.entity';
+import { SpotifyModule } from './spotify/spotify.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { Verfication } from './user/entities/verification.entity';
       refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
     }),
     UserModule,
+    SpotifyModule,
   ],
 })
 export class AppModule implements NestModule {

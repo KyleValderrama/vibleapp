@@ -1,6 +1,14 @@
 import { Field, ObjectType, InputType } from '@nestjs/graphql';
 import { Core } from 'src/common/entities/core.entity';
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 @InputType({ isAbstract: true })
@@ -30,6 +38,24 @@ export class User extends Core {
   @Field((type) => Boolean)
   @Column({ nullable: true, default: false })
   isVerified: boolean;
+
+  @Field((type) => Boolean)
+  @Column({ default: false })
+  isSpotifyConnected: boolean;
+
+  @ManyToMany((type) => User, (user) => user.following, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  followers: User[];
+
+  @ManyToMany((type) => User, (user) => user.followers, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn()
+  following: User[];
 
   @BeforeInsert()
   @BeforeUpdate()

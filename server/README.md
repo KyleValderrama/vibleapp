@@ -12,3 +12,9 @@
 - [ ] User
 - [ ] Auth
 - [ ] Mail
+
+# Integrate Account to Spotify
+
+1. Authorization
+
+- [ ] get tokens with code
