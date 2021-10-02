@@ -43,6 +43,10 @@ export class User extends Core {
   @Column({ default: false })
   isSpotifyConnected: boolean;
 
+  @Field((type) => String, { nullable: true })
+  @Column({ nullable: true })
+  spotifyToken: string;
+
   @ManyToMany((type) => User, (user) => user.following, {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',

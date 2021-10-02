@@ -17,4 +17,6 @@
 
 1. Authorization
 
-- [ ] get tokens with code
+- [x] Get tokens with code / Connect to Spotify
+- [ ] Add encryption to tokens
+- [ ] Get Me

@@ -30,6 +30,8 @@ import { SpotifyModule } from './spotify/spotify.module';
         PG_DB: Joi.string().required(),
         ACCESS_TOKEN_SECRET: Joi.string().required(),
         REFRESH_TOKEN_SECRET: Joi.string().required(),
+        SPOTIFY_CLIENT_ID: Joi.string().required(),
+        SPOTIFY_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -52,7 +54,10 @@ import { SpotifyModule } from './spotify/spotify.module';
       refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
     }),
     UserModule,
-    SpotifyModule,
+    SpotifyModule.forRoot({
+      cliendId: process.env.SPOTIFY_CLIENT_ID,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+    }),
   ],
 })
 export class AppModule implements NestModule {

@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Response } from 'src/common/dtos/response.dto';
 
 @InputType()
-export class SpotifyTokenInput {
+export class ConnectSpotifyInput {
   @Field((type) => String)
   code: string;
 
@@ -14,7 +14,7 @@ export class SpotifyTokenInput {
 }
 
 @ObjectType()
-export class SpotifyTokenResponse extends Response {
+export class ConnectSpotifyResponse extends Response {
   @Field((type) => String)
   spotifyAccessToken?: string;
 
