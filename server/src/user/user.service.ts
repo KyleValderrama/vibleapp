@@ -10,6 +10,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { ProfileResponse } from './dtos/profile.dto';
 import { Verfication } from './entities/verification.entity';
 import { VerifyInput, VerifyResponse } from './dtos/verify.dto';
+import { Token } from 'src/token/entities/token.entity';
 
 @Injectable()
 export class UserService {
@@ -17,6 +18,7 @@ export class UserService {
     @InjectRepository(User) private readonly user: Repository<User>,
     @InjectRepository(Verfication)
     private readonly verification: Repository<Verfication>,
+    @InjectRepository(Token) private readonly token: Repository<Token>,
     private readonly authService: AuthService,
   ) {}
 
@@ -36,6 +38,7 @@ export class UserService {
         this.user.create({ email, password, username }),
       );
       await this.verification.save(this.verification.create({ user }));
+      await this.login({ email, password });
       return {
         status: 'ok',
         message: 'Registration success!',
@@ -54,12 +57,23 @@ export class UserService {
     if (_user) {
       if (await _user.checkPassword(password)) {
         const token = this.authService.sign({ id: _user.id });
-        const refresh = this.authService.refresh({ id: _user.id });
+        var _refresh = '';
+        const tokenExist = await this.token.findOne({ user: _user });
+
+        if (tokenExist) {
+          const { local } = await this.token.findOne({ user: _user });
+          _refresh = local;
+        } else {
+          _refresh = this.authService.refresh({ id: _user.id });
+          await this.token.save(
+            this.token.create({ user: _user, local: _refresh }),
+          );
+        }
         return {
           status: 'ok',
           message: 'Logged-in',
           token,
-          refresh,
+          refresh: _refresh,
         };
       }
       return {

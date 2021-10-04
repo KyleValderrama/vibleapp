@@ -1,5 +1,6 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType, PickType } from '@nestjs/graphql';
 import { Response } from 'src/common/dtos/response.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @InputType()
 export class ConnectSpotifyInput {
@@ -11,6 +12,9 @@ export class ConnectSpotifyInput {
 
   @Field((type) => String)
   redirectUri: string;
+
+  // @Field((type) => User, { nullable: true })
+  // user?: User;
 }
 
 @ObjectType()

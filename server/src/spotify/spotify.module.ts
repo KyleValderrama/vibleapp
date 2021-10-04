@@ -8,9 +8,12 @@ import {
 } from './interfaces/options.interface';
 import { SpotifyRequestURLs } from './interfaces/url.interface';
 import { SpotifyRequests } from './spotify.requests';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/user/entities/user.entity';
+import { Token } from 'src/token/entities/token.entity';
 
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, TypeOrmModule.forFeature([User, Token])],
 })
 @Global()
 export class SpotifyModule {

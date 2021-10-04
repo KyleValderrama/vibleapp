@@ -5,9 +5,12 @@ import {
   CONFIG_OPTIONS,
 } from './interfaces/options.interface';
 import { AuthResolver } from './auth.resolver';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Token } from 'src/token/entities/token.entity';
 
 @Module({
-  providers: [AuthResolver]
+  imports: [TypeOrmModule.forFeature([Token])],
+  providers: [AuthResolver],
 })
 @Global()
 export class AuthModule {

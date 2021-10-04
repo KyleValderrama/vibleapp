@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Resolver, Query } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { TokenInput, TokenResponse } from './dtos/token.dto';

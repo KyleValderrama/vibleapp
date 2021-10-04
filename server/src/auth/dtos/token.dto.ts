@@ -1,5 +1,6 @@
 import { ArgsType, Field, ObjectType } from '@nestjs/graphql';
 import { Response } from 'src/common/dtos/response.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @ArgsType()
 export class TokenInput {

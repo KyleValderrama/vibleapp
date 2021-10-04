@@ -38,9 +38,9 @@ export class UserResolver {
   @Mutation((returns) => VerifyResponse)
   @UseGuards(AuthGuard)
   async verify(
-    @AuthUser() _user: ProfileResponse,
+    @AuthUser() { user }: ProfileResponse,
     @Args('input') { code }: VerifyInput,
   ) {
-    return await this.userService.verify({ code, user: _user.user });
+    return await this.userService.verify({ code, user });
   }
 }

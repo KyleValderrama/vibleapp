@@ -4,6 +4,8 @@ import { AxiosResponse } from '@nestjs/common/node_modules/axios';
 import { AxiosError } from 'axios';
 import { catchError, map, Observable, Observer } from 'rxjs';
 import { ConnectSpotifyInput } from './dtos/connect.dto';
+import { MeInput } from './dtos/me.dto';
+import { TokenInput } from './dtos/token.dto';
 import {
   CONFIG_OPTIONS,
   SpotifyModuleOptions,
@@ -37,6 +39,49 @@ export class SpotifyRequests {
 
     return this.httpService
       .post(this.requestUrls.connect(), params, {
+        auth,
+        headers,
+      })
+      .pipe(
+        catchError((error: AxiosError) => {
+          return new Observable((observer: Observer<AxiosResponse>) => {
+            observer.next(error.response);
+          });
+        }),
+        map((result: AxiosResponse) => {
+          return result;
+        }),
+      );
+  }
+
+  me({ accessToken }: MeInput): Observable<AxiosResponse> {
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    return this.httpService.get(this.requestUrls.me(), { headers }).pipe(
+      catchError((error: AxiosError) => {
+        return new Observable((observer: Observer<AxiosResponse>) => {
+          observer.next(error.response);
+        });
+      }),
+      map((result: AxiosResponse) => {
+        return result;
+      }),
+    );
+  }
+
+  token({ refreshToken, grantType }: TokenInput): Observable<AxiosResponse> {
+    const params = new URLSearchParams();
+    params.append('refresh_token', refreshToken);
+    params.append('grant_type', grantType);
+
+    const auth = {
+      username: this.options.cliendId,
+      password: this.options.clientSecret,
+    };
+
+    const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+
+    return this.httpService
+      .post(this.requestUrls.token(), params, {
         auth,
         headers,
       })

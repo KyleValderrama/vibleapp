@@ -7,7 +7,6 @@ import {
   Entity,
   JoinColumn,
   ManyToMany,
-  OneToMany,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
@@ -22,6 +21,14 @@ export class User extends Core {
   @Field((type) => String)
   @Column()
   email: string;
+
+  @Field((type) => String, { nullable: true })
+  @Column({ nullable: true })
+  displayName?: string;
+
+  @Field((type) => String, { nullable: true })
+  @Column({ nullable: true })
+  spotifyUrl?: string;
 
   @Field((type) => String)
   @Column()
@@ -45,7 +52,7 @@ export class User extends Core {
 
   @Field((type) => String, { nullable: true })
   @Column({ nullable: true })
-  spotifyToken: string;
+  photo?: string;
 
   @ManyToMany((type) => User, (user) => user.following, {
     onUpdate: 'CASCADE',

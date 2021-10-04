@@ -14,6 +14,8 @@ import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './auth/middlewares/auth.middleware';
 import { Verfication } from './user/entities/verification.entity';
 import { SpotifyModule } from './spotify/spotify.module';
+import { TokenModule } from './token/token.module';
+import { Token } from './token/entities/token.entity';
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { SpotifyModule } from './spotify/spotify.module';
         REFRESH_TOKEN_SECRET: Joi.string().required(),
         SPOTIFY_CLIENT_ID: Joi.string().required(),
         SPOTIFY_CLIENT_SECRET: Joi.string().required(),
+        CRYPTR_SECRET: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRoot({
@@ -43,7 +46,7 @@ import { SpotifyModule } from './spotify/spotify.module';
       database: process.env.PG_DB,
       synchronize: process.env.NODE_ENV !== 'prod',
       logging: true,
-      entities: [User, Verfication],
+      entities: [User, Verfication, Token],
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
@@ -58,6 +61,7 @@ import { SpotifyModule } from './spotify/spotify.module';
       cliendId: process.env.SPOTIFY_CLIENT_ID,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     }),
+    TokenModule,
   ],
 })
 export class AppModule implements NestModule {
