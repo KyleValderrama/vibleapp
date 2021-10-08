@@ -12,4 +12,7 @@ export class LoginResponse extends Response {
 
   @Field((type) => String, { nullable: true })
   refresh?: string;
+
+  @Field((type) => String, { nullable: true })
+  spotifyToken?: string;
 }

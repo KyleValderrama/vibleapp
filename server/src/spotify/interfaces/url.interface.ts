@@ -1,16 +1,28 @@
 import { Injectable } from '@nestjs/common';
 
+const accountsUrl: string = 'https://accounts.spotify.com';
+const baseUrl: string = 'https://api.spotify.com';
+const v: string = 'v1';
+
 @Injectable()
 export class SpotifyRequestURLs {
   connect(): string {
-    return 'https://accounts.spotify.com/api/token';
-  }
-
-  me(): string {
-    return 'https://api.spotify.com/v1/me';
+    return `${accountsUrl}/api/token`;
   }
 
   token(): string {
-    return 'https://accounts.spotify.com/api/token';
+    return `${accountsUrl}/api/token`;
+  }
+
+  me(): string {
+    return `${baseUrl}/${v}/me`;
+  }
+
+  recentlyPlayed(): string {
+    return `${baseUrl}/${v}/me/player/recently-played`;
+  }
+
+  tracks(): string {
+    return `${baseUrl}/${v}/tracks`;
   }
 }

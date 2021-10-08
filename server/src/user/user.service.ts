@@ -58,11 +58,13 @@ export class UserService {
       if (await _user.checkPassword(password)) {
         const token = this.authService.sign({ id: _user.id });
         var _refresh = '';
+        var _spotifyToken = '';
         const tokenExist = await this.token.findOne({ user: _user });
 
         if (tokenExist) {
-          const { local } = await this.token.findOne({ user: _user });
+          const { local, spotify } = await this.token.findOne({ user: _user });
           _refresh = local;
+          _spotifyToken = spotify;
         } else {
           _refresh = this.authService.refresh({ id: _user.id });
           await this.token.save(
@@ -74,6 +76,7 @@ export class UserService {
           message: 'Logged-in',
           token,
           refresh: _refresh,
+          spotifyToken: _spotifyToken,
         };
       }
       return {

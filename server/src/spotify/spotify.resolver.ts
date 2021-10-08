@@ -7,6 +7,7 @@ import {
   ConnectSpotifyInput,
   ConnectSpotifyResponse,
 } from './dtos/connect.dto';
+import { RecentlyPlayedInput, RecentlyPlayedResponse } from './dtos/recent.dto';
 import { SpotifyTokenResponse, TokenInput } from './dtos/token.dto';
 import { SpotifyService } from './spotify.service';
 
@@ -30,10 +31,18 @@ export class SpotifyResolver {
 
   @Query((returns) => SpotifyTokenResponse)
   @UseGuards(AuthGuard)
-  async getSpotifyToken({ refreshToken, grantType }: TokenInput) {
+  async getSpotifyToken(
+    @Args('input') { refreshToken, grantType }: TokenInput,
+  ) {
     return this.spotifyService.getSpotifyToken({
       refreshToken,
       grantType,
     });
+  }
+
+  @Query((returns) => RecentlyPlayedResponse)
+  @UseGuards(AuthGuard)
+  recentlyPlayed(@Args() { token }: RecentlyPlayedInput) {
+    return this.spotifyService.recentlyPlayed({ token });
   }
 }

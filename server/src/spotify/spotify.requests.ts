@@ -2,15 +2,29 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/common/node_modules/axios';
 import { AxiosError } from 'axios';
-import { catchError, map, Observable, Observer } from 'rxjs';
+import { catchError, map, Observable, Observer, pipe } from 'rxjs';
 import { ConnectSpotifyInput } from './dtos/connect.dto';
 import { MeInput } from './dtos/me.dto';
+import { RecentlyPlayedInput } from './dtos/recent.dto';
 import { TokenInput } from './dtos/token.dto';
+import { TracksInput } from './dtos/tracks.dto';
 import {
   CONFIG_OPTIONS,
   SpotifyModuleOptions,
 } from './interfaces/options.interface';
 import { SpotifyRequestURLs } from './interfaces/url.interface';
+
+const pipeOptions = () =>
+  pipe(
+    catchError((error: AxiosError) => {
+      return new Observable((observer: Observer<AxiosResponse>) => {
+        observer.next(error.response);
+      });
+    }),
+    map((result: AxiosResponse) => {
+      return result;
+    }),
+  );
 
 @Injectable()
 export class SpotifyRequests {
@@ -42,30 +56,14 @@ export class SpotifyRequests {
         auth,
         headers,
       })
-      .pipe(
-        catchError((error: AxiosError) => {
-          return new Observable((observer: Observer<AxiosResponse>) => {
-            observer.next(error.response);
-          });
-        }),
-        map((result: AxiosResponse) => {
-          return result;
-        }),
-      );
+      .pipe(pipeOptions());
   }
 
   me({ accessToken }: MeInput): Observable<AxiosResponse> {
     const headers = { Authorization: `Bearer ${accessToken}` };
-    return this.httpService.get(this.requestUrls.me(), { headers }).pipe(
-      catchError((error: AxiosError) => {
-        return new Observable((observer: Observer<AxiosResponse>) => {
-          observer.next(error.response);
-        });
-      }),
-      map((result: AxiosResponse) => {
-        return result;
-      }),
-    );
+    return this.httpService
+      .get(this.requestUrls.me(), { headers })
+      .pipe(pipeOptions());
   }
 
   token({ refreshToken, grantType }: TokenInput): Observable<AxiosResponse> {
@@ -85,15 +83,24 @@ export class SpotifyRequests {
         auth,
         headers,
       })
-      .pipe(
-        catchError((error: AxiosError) => {
-          return new Observable((observer: Observer<AxiosResponse>) => {
-            observer.next(error.response);
-          });
-        }),
-        map((result: AxiosResponse) => {
-          return result;
-        }),
-      );
+      .pipe(pipeOptions());
+  }
+
+  recentlyPlayed({ token }: RecentlyPlayedInput): Observable<AxiosResponse> {
+    const headers = { Authorization: `Bearer ${token}` };
+    return this.httpService
+      .get(this.requestUrls.recentlyPlayed(), {
+        headers,
+      })
+      .pipe(pipeOptions());
+  }
+
+  tracks({ token, ids }: TracksInput): Observable<AxiosResponse> {
+    const headers = { Authorization: `Bearer ${token}` };
+    return this.httpService
+      .get(`${this.requestUrls.tracks()}?ids=${ids.join(',')}`, {
+        headers,
+      })
+      .pipe(pipeOptions());
   }
 }

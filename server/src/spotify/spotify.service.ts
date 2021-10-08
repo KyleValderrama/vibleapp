@@ -6,7 +6,9 @@ import { Token } from 'src/token/entities/token.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { ConnectSpotifyResponse } from './dtos/connect.dto';
+import { RecentlyPlayedInput, RecentlyPlayedResponse } from './dtos/recent.dto';
 import { TokenInput, SpotifyTokenResponse } from './dtos/token.dto';
+import { Track } from './interfaces/track.interface';
 import { SpotifyRequests } from './spotify.requests';
 
 @Injectable()
@@ -83,6 +85,43 @@ export class SpotifyService {
     return {
       status: 'error',
       message: tokenResponse.data.error_description,
+    };
+  }
+
+  async recentlyPlayed({
+    token,
+  }: RecentlyPlayedInput): Promise<RecentlyPlayedResponse> {
+    const { data }: AxiosResponse = await firstValueFrom(
+      this.requests.recentlyPlayed({ token }),
+    );
+
+    const trackIds = data.items.map((item) => {
+      return item.track.id;
+    });
+
+    const trackResponse: AxiosResponse = await firstValueFrom(
+      this.requests.tracks({ token, ids: trackIds }),
+    );
+
+    const tracks = trackResponse.data.tracks.map(
+      ({ id, album, artists, preview_url, name, href }) => {
+        const track: Track = {
+          id,
+          album: album.name,
+          artist: artists.join(', '),
+          preview: preview_url,
+          name,
+          url: href,
+          photo: album.images[0].url,
+        };
+        return track;
+      },
+    );
+
+    return {
+      status: 'ok',
+      message: 'Recently played tracks',
+      tracks,
     };
   }
 }

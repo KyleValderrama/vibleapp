@@ -19,7 +19,7 @@ export class AuthService {
 
   sign(payload: object): string {
     return jwt.sign(payload, this.options.accessTokenSecret, {
-      expiresIn: '1m',
+      expiresIn: '5m',
     });
   }
 
