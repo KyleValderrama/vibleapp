@@ -11,7 +11,12 @@ const Stack = createNativeStackNavigator<AuthParamList>();
 export const AuthStack: React.FC<AuthStackProps> = ({}) => {
   return (
     <AuthProvider>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
         {AuthRoutes.map(({ name, component }, key) => {
           return <Stack.Screen key={key} name={name} component={component} />;
         })}
